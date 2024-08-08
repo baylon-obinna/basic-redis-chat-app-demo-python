@@ -39,5 +39,8 @@
   },
   "devDependencies": {
     "@types/socket.io-client": "^1.4.34"
+  },
+  "resolutions": {
+    "postcss": "^8.0.0"
   }
 }
