@@ -1,0 +1,44 @@
+services:
+  chatfrontend:
+    build:
+      context: ./client
+      dockerfile: dockerfile
+    tty: true
+    ports:
+      - "5000:5000"
+    depends_on:
+      - redis
+    networks:
+     - redis-net
+
+  chatbackend:
+    build:
+      context: . 
+      dockerfile: Dockerfile
+    tty: true
+    ports:
+      - "8000:8000"
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - redis
+    networks:
+      - redis-net
+    
+
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+    restart: always
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:
+
+
+networks:
+  snap-net:
