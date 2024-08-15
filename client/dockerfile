@@ -1,11 +1,10 @@
-# Stage 1: Build Stage
-FROM node:18 AS build
+FROM node:16-alpine 
 
 # Set the working directory inside the container
 WORKDIR /app
 
 # Copy package.json to the working directory
-COPY package.json ./
+COPY package*.json ./
 
 # Install dependencies
 RUN npm install
@@ -16,18 +15,11 @@ COPY . .
 # Build the application 
 RUN npm run build
 
-# Stage 2: Final Stage using Distroless Image
-FROM gcr.io/distroless/nodejs16
+# Ensure /bin/sh is available
+RUN apk add --no-cache bash
 
-# Set the working directory
-WORKDIR /app
-
-# Copy the necessary files from the build stage
-COPY --from=build /app/build ./build
-COPY --from=build /app/package*.json ./
-
-# Expose the application port (optional)
+# Expose the application port 
 EXPOSE 5000
 
 # Set the command to run the application
-CMD ["npm" "run" "start"]
+CMD ["npm", "start"]
