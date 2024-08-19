@@ -5,17 +5,11 @@ from werkzeug.utils import import_string
 
 
 class Config(object):
-    # Parse redis environment variables.
-    redis_endpoint_url = os.environ.get("REDIS_ENDPOINT_URL", "172.0.0.1:6379")
-    REDIS_HOST, REDIS_PORT = tuple(redis_endpoint_url.split(":"))
-    REDIS_PASSWORD = os.environ.get("REDIS_PASSWORD", None)
+    REDIS_URL = os.environ.get("REDIS_URL", "redis://:redispass@redis:6379/0")
     SECRET_KEY = os.environ.get("SECRET_KEY", "Optional default value")
     SESSION_TYPE = "redis"
-    redis_client = redis.Redis(
-        host=REDIS_HOST, port=REDIS_PORT, password=REDIS_PASSWORD
-    )
+    redis_client = redis.Redis.from_url(REDIS_URL)
     SESSION_REDIS = redis_client
-    # TODO: Auth...
 
 
 class ConfigDev(Config):

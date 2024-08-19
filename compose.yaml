@@ -3,42 +3,47 @@ services:
     build:
       context: ./client
       dockerfile: dockerfile
-    tty: true
+    image: baylon44/redis-chat-app:chatfrontend
+    restart: always
     ports:
-      - "5000:5000"
+      - "3000:3000"
     depends_on:
       - chatbackend
     networks:
-     - redis-net
+      - redis-net
 
   chatbackend:
     build:
-      context: . 
+      context: .
       dockerfile: Dockerfile
-    tty: true
+    image: baylon44/redis-chat-app:chatbackend
+    restart: always
     ports:
       - "8000:8000"
     environment:
-      - REDIS_URL = redis://redisuser:redispass@redis:6379/0
+      - REDIS_URL=redis://:redispass@redis:6379/0
+      - REACT_APP_API_URL=http://chatbackend:8000
     depends_on:
       - redis
     networks:
       - redis-net
-    
+
   redis:
     image: "redis:alpine"
     ports:
       - "6379:6379"
     environment:
-      - REDIS_USERNAME=redisuser
-      - REDIS_PASSWORD=redispass
-    command: redis-server --requirepass redispass --masterauth redispass
+      - REDIS_PASSWORD=redispass #for development purposes
+    command: redis-server --requirepass redispass
     restart: always
     volumes:
       - redis-data:/data
+    networks:
+      - redis-net
 
 volumes:
   redis-data:
 
 networks:
   redis-net:
+    driver: bridge

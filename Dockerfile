@@ -1,29 +1,22 @@
-# Stage 1: Build Stage
-FROM python:3.7 AS build
+# Use Python 3.7
+FROM python:3.7-slim
 
-# Copy requirements.txt to the docker image and install packages
-COPY requirements.txt /
+# Set the working directory
+WORKDIR /app
+
+# Copy requirements.txt and install packages
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Set the WORKDIR to be the folder
-WORKDIR /app
-COPY . /app
+# Copy the rest of the application
+COPY . .
 
-# Stage 2: Final Stage using Distroless Image
-FROM gcr.io/distroless/python3
+# Expose port 8000
+EXPOSE 8000
 
-# Set the WORKDIR to /app
-WORKDIR /app
-
-# Copy the application and installed packages from the build stage
-COPY --from=build /app /app
-COPY --from=build /usr/local/bin/python3.7 /usr/local/bin/python3.7
-COPY --from=build /usr/local/bin/gunicorn /usr/local/bin/gunicorn
-
-# Expose port 8080
-EXPOSE 8080
-ENV PORT 8080
+# Set environment variable
+ENV PORT 8000
 
 # Use gunicorn as the entrypoint
-CMD ["gunicorn", "--bind", ":$PORT", "--worker-class", "eventlet", "-w", "1", "app:app"]
-
+ENTRYPOINT ["gunicorn"]
+CMD ["--bind", "0.0.0.0:8000", "--worker-class", "eventlet", "-w", "1", "app:app"]

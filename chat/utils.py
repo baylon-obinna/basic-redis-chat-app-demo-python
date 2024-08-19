@@ -5,11 +5,11 @@ import random
 import bcrypt
 
 from chat import demo_data
-from chat.config import get_config
+from chat.config import Config
 
 SERVER_ID = random.uniform(0, 322321)
 
-redis_client = get_config().redis_client
+redis_client = Config.redis_client
 
 
 def make_username_key(username):
