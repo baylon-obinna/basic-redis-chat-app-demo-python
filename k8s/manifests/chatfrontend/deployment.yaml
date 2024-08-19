@@ -1,8 +1,7 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: redis-chat-app
+  name: chatfrontend
   labels:
     app: redis-chat-app
 spec:
@@ -16,8 +15,13 @@ spec:
         app: redis-chat-app
     spec:
       containers:
-      - name: redis-chat-app
-        image: nginx:1.14.2
+      - name: chatfrontend
+        image: baylon44/redis-chat-app:chatfrontend
         ports:
-        - containerPort: 80
+        - containerPort: 8000
+        env:
+        - name: REDIS_HOST
+          value: redis-service
+        - name: REDIS_PORT
+          value: "6379"
 ---

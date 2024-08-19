@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chatbackend
+  labels:
+    app: redis-chat-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: redis-chat-app
+  template:
+    metadata:
+      labels:
+        app: redis-chat-app
+    spec:
+      containers:
+      - name: chatbackend
+        image: baylon44/redis-chat-app:chatbackend
+        ports:
+        - containerPort: 5000
+        env:
+        - name: REDIS_HOST
+          value: redis-service
+        - name: REDIS_PORT
+          value: "6379"
+---

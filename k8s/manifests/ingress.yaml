@@ -10,10 +10,25 @@ spec:
   - host: redis-chat-local
     http:
       paths:
-      - pathType: Prefix
-        path: "/"
+      - path: /frontend
+        pathType: Prefix
         backend:
           service:
-            name: redis-chat-app
+            name: chatfrontend-service
             port:
-              number: 80
+              number: 8000
+      - path: /backend
+        pathType: Prefix
+        backend:
+          service:
+            name: chatbackend-service
+            port:
+              number: 5000
+      - path: /redis
+        pathType: Prefix
+        backend:
+          service:
+            name: redis-service
+            port:
+              number: 6379
+--- 
