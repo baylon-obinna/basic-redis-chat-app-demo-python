@@ -5,9 +5,9 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: "/"
 spec:
-  IngressClassName: nginx
+  ingressClassName: nginx
   rules:
-  - host: redis-chat-local
+  - host: redis-chat.local
     http:
       paths:
       - path: /frontend
