@@ -18,7 +18,7 @@ spec:
       - name: chatbackend
         image: baylon44/redis-chat-app:chatbackend
         ports:
-        - containerPort: 5000
+        - containerPort: 8000
         env:
         - name: REDIS_HOST
           value: redis-service

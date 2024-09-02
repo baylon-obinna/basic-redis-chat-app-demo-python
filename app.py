@@ -1,4 +1,5 @@
 from chat.app import app, run_app  # noqa
+from chat.demo_data import create  
 
 
 if __name__ == "__main__":
@@ -7,4 +8,5 @@ if __name__ == "__main__":
     import eventlet
 
     eventlet.monkey_patch()
+    create()
     run_app()

@@ -5,7 +5,7 @@ import json
 import random
 import time
 
-demo_users = ["Pablo", "Joe", "Mary", "Alex"]
+demo_users = ["obinna", "Joe", "Mary", "Alex"]
 greetings = ["Hello", "Hi", "Yo", "Hola"]
 demo_password = "password123"
 messages = [
