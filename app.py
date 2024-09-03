@@ -1,12 +1,28 @@
-from chat.app import app, run_app  # noqa
-from chat.demo_data import create  
+import eventlet
+import logging
+import os
 
+eventlet.monkey_patch()
+
+# Set up logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+from chat.app import app, run_app  # noqa
+from chat.demo_data import create
+from chat import utils  # Import utils to access init_redis
 
 if __name__ == "__main__":
-    # monkey patch is "required to force the message queue package to use coroutine friendly functions and classes"
-    # check flask-socketio docs https://flask-socketio.readthedocs.io/en/latest/
-    import eventlet
-
-    eventlet.monkey_patch()
-    create()
+    logging.info("Starting application in local development mode")
+    
+    # Initialize Redis
+    utils.init_redis()
+    
+    # Check if we should create demo data
+    if os.environ.get('CREATE_DEMO_DATA', 'True').lower() == 'true':
+        logging.info("Creating demo data...")
+        create()
+    else:
+        logging.info("Skipping demo data creation (CREATE_DEMO_DATA is not True)")
+    
+    # Run the app
     run_app()

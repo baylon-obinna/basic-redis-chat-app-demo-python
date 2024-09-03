@@ -23,6 +23,7 @@ services:
     environment:
       - REDIS_URL=redis://:redispass@redis:6379/0
       - REACT_APP_API_URL=http://chatbackend:8000
+      - CREATE_DEMO_DATA=True
     depends_on:
       - redis
     networks:

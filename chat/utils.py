@@ -1,6 +1,9 @@
 import json
 import math
 import random
+import logging
+import os
+import redis
 
 import bcrypt
 
@@ -11,12 +14,15 @@ SERVER_ID = random.uniform(0, 322321)
 
 redis_client = Config.redis_client
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 
 def make_username_key(username):
     return f"username:{username}"
 
 
 def create_user(username, password):
+    logging.info(f"Creating user: {username}")
     username_key = make_username_key(username)
     # Create a user
     hashed_password = bcrypt.hashpw(str(password).encode("utf-8"), bcrypt.gensalt(10))
@@ -26,6 +32,7 @@ def create_user(username, password):
     redis_client.hmset(user_key, {"username": username, "password": hashed_password})
 
     redis_client.sadd(f"user:{next_id}:rooms", "0")
+    logging.info(f"User created with ID: {next_id}")
 
     return {"id": next_id, "username": username}
 
@@ -56,6 +63,7 @@ def get_private_room_id(user1, user2):
 
 
 def create_private_room(user1, user2):
+    logging.info(f"Creating private room for users {user1} and {user2}")
     """Create a private room and add users to it"""
     room_id = get_private_room_id(user1, user2)
     if not room_id:
@@ -64,6 +72,7 @@ def create_private_room(user1, user2):
     # Add rooms to those users
     redis_client.sadd(f"user:{user1}:rooms", room_id)
     redis_client.sadd(f"user:{user2}:rooms", room_id)
+    logging.info(f"Private room created with ID: {room_id}")
 
     return (
         {
@@ -78,20 +87,32 @@ def create_private_room(user1, user2):
 
 
 def init_redis():
-    # We store a counter for the total users and increment it on each register
-    total_users_exist = redis_client.exists("total_users")
-    if not total_users_exist:
-        # This counter is used for the id
-        redis_client.set("total_users", 0)
-        # Some rooms have pre-defined names. When the clients attempts to fetch a room, an additional lookup
-        # is handled to resolve the name.
-        # Rooms with private messages don't have a name
-        redis_client.set(f"room:0:name", "General")
-
-        demo_data.create()
-
+    try:
+        logging.info("Initializing Redis...")
+        redis_client.ping()
+        total_users_exist = redis_client.exists("total_users")
+        if not total_users_exist:
+            logging.info("Setting up initial Redis data...")
+            redis_client.set("total_users", 0)
+            redis_client.set(f"room:0:name", "General")
+        
+        if os.environ.get('CREATE_DEMO_DATA', 'True').lower() == 'true':
+            if not total_users_exist:
+                logging.info("Creating demo data...")
+                demo_data.create()
+            else:
+                logging.info("Demo data already exists, skipping creation.")
+        else:
+            logging.info("Demo data creation skipped (CREATE_DEMO_DATA is not True).")
+        
+        logging.info("Redis initialization complete.")
+    except redis.exceptions.ConnectionError as e:
+        logging.error("Failed to connect to Redis")
+        raise
+    except Exception as e:
+        logging.error(f"Error initializing Redis: {str(e)}")
+        raise e
 # We use event stream for pub sub. A client connects to the stream endpoint and listens for the messages
-
 
 def event_stream():
     """Handle message formatting, etc."""
