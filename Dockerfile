@@ -11,22 +11,26 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application
 COPY . .
 
-# Create a startup script
-RUN echo '#!/bin/bash\n\
-python -c "import eventlet; eventlet.monkey_patch(); \
-from chat.app import app, run_app; \
-from chat import utils; \
-import os; \
-utils.init_redis(); \
-if os.environ.get('CREATE_DEMO_DATA', 'True').lower() == 'true': \
-    from chat.demo_data import create; \
-    create(); \
-run_app()"' > /app/start.sh && chmod +x /app/start.sh
+# Create a Python startup script instead of a bash script
+RUN echo 'import eventlet\n\
+eventlet.monkey_patch()\n\
+from chat.app import app, run_app\n\
+from chat import utils\n\
+import os\n\
+\n\
+utils.init_redis()\n\
+\n\
+if os.environ.get("CREATE_DEMO_DATA", "True").lower() == "true":\n\
+    from chat.demo_data import create\n\
+    create()\n\
+\n\
+run_app()' > /app/start.py
+
 # Expose port 8000
 EXPOSE 8000
 
 # Set environment variable
 ENV PORT 8000
 
-# Use the startup script as the entrypoint
-ENTRYPOINT ["/app/start.sh"]
+# Use the Python script as the entrypoint
+CMD ["python", "/app/start.py"]
