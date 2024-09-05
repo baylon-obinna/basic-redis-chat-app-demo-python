@@ -87,31 +87,29 @@ def create_private_room(user1, user2):
 
 
 def init_redis():
-    try:
-        logging.info("Initializing Redis...")
-        redis_client.ping()
-        total_users_exist = redis_client.exists("total_users")
+    if getattr(init_redis, 'initialized', False):
+        logging.info("Redis already initialized, skipping.")
+        return
+
+    logging.info("Initializing Redis...")
+    total_users_exist = redis_client.exists("total_users")
+    if not total_users_exist:
+        logging.info("Setting up initial Redis data...")
+        redis_client.set("total_users", 0)
+        redis_client.set(f"room:0:name", "General")
+    
+    if os.environ.get('CREATE_DEMO_DATA', 'True').lower() == 'true':
         if not total_users_exist:
-            logging.info("Setting up initial Redis data...")
-            redis_client.set("total_users", 0)
-            redis_client.set(f"room:0:name", "General")
-        
-        if os.environ.get('CREATE_DEMO_DATA', 'True').lower() == 'true':
-            if not total_users_exist:
-                logging.info("Creating demo data...")
-                demo_data.create()
-            else:
-                logging.info("Demo data already exists, skipping creation.")
+            logging.info("Creating demo data...")
+            from chat.demo_data import create
+            create()
         else:
-            logging.info("Demo data creation skipped (CREATE_DEMO_DATA is not True).")
-        
-        logging.info("Redis initialization complete.")
-    except redis.exceptions.ConnectionError as e:
-        logging.error("Failed to connect to Redis")
-        raise
-    except Exception as e:
-        logging.error(f"Error initializing Redis: {str(e)}")
-        raise e
+            logging.info("Demo data already exists, skipping creation.")
+    else:
+        logging.info("Demo data creation skipped (CREATE_DEMO_DATA is not True).")
+    
+    logging.info("Redis initialization complete.")
+    init_redis.initialized = True
 # We use event stream for pub sub. A client connects to the stream endpoint and listens for the messages
 
 def event_stream():

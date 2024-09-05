@@ -26,8 +26,6 @@ sess.init_app(app)
 # Initialize SocketIO
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-# Initialize Redis
-utils.init_redis()
 
 # Set up SocketIO event handlers
 socketio.on_event("connect", io_connect)

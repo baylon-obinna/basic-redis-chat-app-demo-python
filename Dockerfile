@@ -12,9 +12,16 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Create a startup script
-RUN echo '#!/bin/bash\npython -c "import eventlet; eventlet.monkey_patch(); from chat.app import app, run_app; from chat import utils; utils.init_redis(); from chat.demo_data import create; import os; create() if os.environ.get('CREATE_DEMO_DATA', 'True').lower() == 'true' else None; run_app()"' > /app/start.sh \
-    && chmod +x /app/start.sh
-
+RUN echo '#!/bin/bash\n\
+python -c "import eventlet; eventlet.monkey_patch(); \
+from chat.app import app, run_app; \
+from chat import utils; \
+import os; \
+utils.init_redis(); \
+if os.environ.get('CREATE_DEMO_DATA', 'True').lower() == 'true': \
+    from chat.demo_data import create; \
+    create(); \
+run_app()"' > /app/start.sh && chmod +x /app/start.sh
 # Expose port 8000
 EXPOSE 8000
 
