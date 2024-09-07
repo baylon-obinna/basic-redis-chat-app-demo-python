@@ -3,10 +3,12 @@ services:
     build:
       context: ./client
       dockerfile: dockerfile
-    image: baylon44/redis-chat-app:chatfrontend
+    image: baylon44/redis-chat-app:chatfrontend.v2
     restart: always
     ports:
       - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://chatbackend:8000
     depends_on:
       - chatbackend
     networks:
@@ -16,13 +18,12 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: baylon44/redis-chat-app:chatbackend
+    image: baylon44/redis-chat-app:chatbackend.v3
     restart: always
     ports:
       - "8000:8000"
     environment:
       - REDIS_URL=redis://:redispass@redis:6379/0
-      - REACT_APP_API_URL=http://localhost:8000
       - CREATE_DEMO_DATA=True
     depends_on:
       - redis

@@ -2,7 +2,7 @@ import os
 import sys
 import logging
 
-from flask import Flask
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_session import Session
 from flask_socketio import SocketIO
@@ -17,15 +17,14 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 # Initialize Flask app
 app = Flask(__name__, static_url_path="", static_folder="../client/build")
 app.config.from_object(get_config())
-CORS(app)
+CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "http://chatfrontend:3000"]}})
 
 # Initialize session
 sess = Session()
 sess.init_app(app)
 
 # Initialize SocketIO
-socketio = SocketIO(app, cors_allowed_origins="*")
-
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
 
 # Set up SocketIO event handlers
 socketio.on_event("connect", io_connect)
@@ -35,6 +34,17 @@ socketio.on_event("message", io_on_message)
 
 # Import routes
 from chat import routes  # noqa
+
+# Add test endpoint
+@app.route('/api/test', methods=['GET'])
+def test():
+    return jsonify({"message": "Backend is reachable!"})
+
+# Add debug logging
+@app.before_request
+def log_request_info():
+    app.logger.debug('Headers: %s', request.headers)
+    app.logger.debug('Body: %s', request.get_data())
 
 def run_app():
     logging.info("Starting the application...")
@@ -49,7 +59,7 @@ def run_app():
             logging.warning(f"Invalid port argument: {arg[0]}. Using default port {port}.")
     
     logging.info(f"Running the application on port {port}")
-    socketio.run(app, port=port, debug=True, use_reloader=True)
+    socketio.run(app, host='0.0.0.0', port=port, debug=True, use_reloader=True)
 
 application = app
 

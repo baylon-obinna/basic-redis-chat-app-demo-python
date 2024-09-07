@@ -260,12 +260,19 @@ sess.init_app(app)
 
     - REDIS_ENDPOINT_URI: Redis server URI
     - REDIS_PASSWORD: Password to the server
+    - REDIS_USER: User to connect #redisuser 
 
 #### Run frontend
 
 ```sh
 cd client
-yarn install
+nvm install 16
+nvm use 16
+npm update
+npm install 
+npm run start
+--
+yarn install #production
 yarn start
 ```
 
@@ -274,6 +281,7 @@ yarn start
 Run with venv:
 
 ```sh
+install requirements.txt {pip install -r requirements.txt} # for some you have to these packages after {pip install flask flask_cors flask_session flask_socketio bcrypt redis eventlent}
 python app.py
 ```
 
