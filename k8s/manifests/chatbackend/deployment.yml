@@ -3,20 +3,20 @@ kind: Deployment
 metadata:
   name: chatbackend
   labels:
-    app: redis-chat-app
+    app: chatbackend
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: redis-chat-app
+      app: chatbackend
   template:
     metadata:
       labels:
-        app: redis-chat-app
+        app: chatbackend
     spec:
       containers:
       - name: chatbackend
-        image: baylon44/redis-chat-app:chatbackend
+        image: baylon44/redis-chat-app:chatbackend.v3
         ports:
         - containerPort: 8000
         env:
@@ -24,4 +24,7 @@ spec:
           value: redis-service
         - name: REDIS_PORT
           value: "6379"
+        - name: CREATE_DEMO_DATA
+          value: "true"
+          
 ---

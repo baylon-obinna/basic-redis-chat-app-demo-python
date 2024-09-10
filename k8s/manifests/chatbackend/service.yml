@@ -4,7 +4,7 @@ metadata:
   name: chatbackend-service
 spec:
   selector:
-    app: redis-chat-app
+    app: chatbackend
   ports:
     - protocol: TCP
       port: 8000

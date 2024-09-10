@@ -17,11 +17,5 @@ spec:
             name: chatfrontend-service
             port:
               number: 3000
-      - path: /backend
-        pathType: Prefix
-        backend:
-          service:
-            name: chatbackend-service
-            port:
-              number: 8000
+              
 --- 

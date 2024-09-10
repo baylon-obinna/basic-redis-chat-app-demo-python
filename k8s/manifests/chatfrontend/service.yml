@@ -4,7 +4,7 @@ metadata:
   name: chatfrontend-service
 spec:
   selector:
-    app: redis-chat-app
+    app: chatfrontend
   ports:
     - protocol: TCP
       port: 3000
