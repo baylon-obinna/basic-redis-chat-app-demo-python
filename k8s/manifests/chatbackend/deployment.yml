@@ -20,11 +20,12 @@ spec:
         ports:
         - containerPort: 8000
         env:
-        - name: REDIS_HOST
-          value: redis-service
-        - name: REDIS_PORT
-          value: "6379"
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: redis-secret
+              key: redis-password
+        - name: REDIS_URL
+          value: redis://:$(REDIS_PASSWORD)@redis-service:6379/0
         - name: CREATE_DEMO_DATA
           value: "true"
-          
----
