@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chatbackend
+  labels:
+    app: chatbackend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chatbackend
+  template:
+    metadata:
+      labels:
+        app: chatbackend
+    spec:
+      containers:
+      - name: chatbackend
+        image: "{{ .Values.chatbackend.image.repository }}:{{ .Values.chatbackend.image.tag }}"
+        ports:
+        - containerPort: 8000
+        env:
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: redis-secret
+              key: redis-password
+        - name: REDIS_URL
+          value: redis://:$(REDIS_PASSWORD)@redis-service:6379/0
+        - name: CREATE_DEMO_DATA
+          value: "true"

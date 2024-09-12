@@ -3,7 +3,7 @@ services:
     build:
       context: ./client
       dockerfile: dockerfile
-    image: baylon44/redis-chat-app:chatfrontend.v2
+    image: baylon44/redis-chat-frontend:latest
     restart: always
     ports:
       - "3000:3000"
@@ -18,7 +18,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: baylon44/redis-chat-app:chatbackend.v3
+    image: baylon44/redis-chat-backend:latest
     restart: always
     ports:
       - "8000:8000"

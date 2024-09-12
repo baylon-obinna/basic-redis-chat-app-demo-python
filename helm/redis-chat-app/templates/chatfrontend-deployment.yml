@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chatfrontend
+  labels:
+    app: chatfrontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chatfrontend
+  template:
+    metadata:
+      labels:
+        app: chatfrontend
+    spec:
+      containers:
+      - name: chatfrontend
+        image: "{{ .Values.chatfrontend.image.repository }}:{{ .Values.chatfrontend.image.tag }}"
+        ports:
+        - containerPort: 3000
+        env:
+        - name: REDIS_HOST
+          value: redis-service
+        - name: REDIS_PORT
+          value: "6379"
+        - name: REACT_APP_API_URL
+          value: "http://chatbackend-service:8000"
+---
