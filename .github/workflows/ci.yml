@@ -14,13 +14,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      redis:
-        image: redis:alpine
-        ports:
-          - 6379:6379
-        options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 3
-        
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -60,9 +53,9 @@ jobs:
       - name: Check for dependency issues
         run: pip check
 
-      - name: Start Redis with Password
+      - name: Start Redis
         run: |
-          docker run -d --name redis -p 6379:6379 redis:alpine redis-server --requirepass ${{ secrets.REDIS_PASSWORD }}
+          docker run -d --name redis -p 6379:6379 -e REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }} redis:alpine redis-server --requirepass ${{ secrets.REDIS_PASSWORD }}
         
       - name: Wait for Redis
         run: |
