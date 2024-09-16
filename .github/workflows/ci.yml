@@ -20,9 +20,7 @@ jobs:
         ports:
           - 6379:6379
         options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 3
-        env:
-          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
-
+        
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -62,6 +60,14 @@ jobs:
       - name: Check for dependency issues
         run: pip check
 
+      - name: Start Redis with Password
+        run: |
+          docker run -d --name redis -p 6379:6379 redis:alpine redis-server --requirepass ${{ secrets.REDIS_PASSWORD }}
+        
+      - name: Wait for Redis
+        run: |
+          sleep 10  # Wait for Redis to be ready
+      
       - name: Test backend build
         env:
           REDIS_URL: redis://:${{ secrets.REDIS_PASSWORD }}@localhost:6379/0
