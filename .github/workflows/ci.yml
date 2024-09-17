@@ -124,13 +124,13 @@ jobs:
       # Build and tag frontend image with GitHub run ID
       - name: Build frontend Docker image
         run: |
-          docker-compose build chatfrontend
+          docker build -t baylon44/redis-chat-frontend:latest -f ./client/dockerfile
           docker tag baylon44/redis-chat-frontend:latest baylon44/redis-chat-frontend:${{ github.run_id }}
 
       # Build and tag backend image with GitHub run ID
       - name: Build backend Docker image
         run: |
-          docker-compose build chatbackend
+          docker build -t baylon44/redis-chat-backend:latest -f .Dockerfile
           docker tag baylon44/redis-chat-backend:latest baylon44/redis-chat-backend:${{ github.run_id }}
 
       # Push images to Docker Hub
