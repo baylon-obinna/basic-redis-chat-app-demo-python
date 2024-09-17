@@ -80,13 +80,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: Install ESLint
+        run: |
+          npm install --prefix ./client
+          npm install eslint --prefix ./client
+
       # Static analysis for frontend 
       - name: Run ESLint for frontend
         run: npm run lint --prefix ./client
 
       # Static analysis for backend 
       - name: Run Flake8 for backend
-        run: flake8 ./app.py
+        run: |
+          pip install flake8
+          flake8 ./app.py
 
   # Docker image build and push with GitHub run ID tag
   docker_build_push:
