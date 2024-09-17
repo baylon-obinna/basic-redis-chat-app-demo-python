@@ -65,8 +65,9 @@ jobs:
         env:
           REDIS_URL: redis://:${{ secrets.REDIS_PASSWORD }}@localhost:6379/0
           CREATE_DEMO_DATA: True
-        run: python ./app.py
-
+        run: |
+          pytest ./tests
+          
   # Static Code Analysis
   static_analysis:
     runs-on: ubuntu-latest
