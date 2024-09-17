@@ -12,7 +12,7 @@ from chat import utils
 
 if __name__ == "__main__":
     logging.info("Starting application in local development mode")
-    
+
     utils.init_redis()
-    
+
     run_app()
