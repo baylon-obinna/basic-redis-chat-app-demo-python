@@ -16,7 +16,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build"
+    "build": "react-scripts build",
+    "lint": "eslint ./src"
   },
   "eslintConfig": {
     "extends": [
@@ -38,7 +39,9 @@
     ]
   },
   "devDependencies": {
-    "@types/socket.io-client": "^1.4.34"
+    "@types/socket.io-client": "^1.4.34",
+    "eslint": "^7.32.0",
+    "eslint-plugin-react": "^7.24.0"
   },
   "resolutions": {
     "postcss": "^8.0.0"
