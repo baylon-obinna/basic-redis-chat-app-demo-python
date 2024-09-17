@@ -124,18 +124,11 @@ jobs:
       # Build and tag frontend image with GitHub run ID
       - name: Build frontend Docker image
         run: |
-          docker buildx build -t baylon44/redis-chat-frontend:latest -f ./client/dockerfile  ./client
-          docker tag baylon44/redis-chat-frontend:latest baylon44/redis-chat-frontend:${{ github.run_id }}
+          docker buildx build -t baylon44/redis-chat-frontend:latest -t baylon44/redis-chat-frontend:${{ github.run_id }} -f ./client/dockerfile  ./client --load
+          docker push baylon44/redis-chat-frontend:${{ github.run_id }}
 
       # Build and tag backend image with GitHub run ID
       - name: Build backend Docker image
         run: |
-          docker buildx build -t baylon44/redis-chat-backend:latest -f .Dockerfile  .Dockerfile
-          docker tag baylon44/redis-chat-backend:latest baylon44/redis-chat-backend:${{ github.run_id }}
-
-      # Push images to Docker Hub
-      - name: Push frontend Docker image
-        run: docker push baylon44/redis-chat-frontend:${{ github.run_id }}
-
-      - name: Push backend Docker image
-        run: docker push baylon44/redis-chat-backend:${{ github.run_id }}
+          docker buildx build -t baylon44/redis-chat-backend:latest -t baylon44/redis-chat-backend:${{ github.run_id }} -f .Dockerfile  .Dockerfile --load
+          baylon44/redis-chat-backend:${{ github.run_id }}
