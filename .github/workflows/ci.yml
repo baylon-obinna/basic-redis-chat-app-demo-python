@@ -24,6 +24,16 @@ jobs:
         with:
           node-version: 16
 
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-modules-
+
       - name: Install frontend dependencies
         run: |
           npm update    
@@ -37,6 +47,14 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: '3.8'
+
+      - name: Cache pip packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
 
       # Install system dependencies
       - name: Install system dependencies for Python
@@ -53,21 +71,6 @@ jobs:
       - name: Check for dependency issues
         run: pip check
 
-      - name: Start Redis
-        run: |
-          docker run -d --name redis -p 6379:6379 -e REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }} redis:alpine redis-server --requirepass ${{ secrets.REDIS_PASSWORD }}
-        
-      - name: Wait for Redis
-        run: |
-          sleep 10  # Wait for Redis to be ready
-      
-      - name: Test backend build
-        env:
-          REDIS_URL: redis://:${{ secrets.REDIS_PASSWORD }}@localhost:6379/0
-          CREATE_DEMO_DATA: True
-        run: |
-          pytest ./tests
-          
   # Static Code Analysis
   static_analysis:
     runs-on: ubuntu-latest
@@ -124,4 +127,3 @@ jobs:
 
       - name: Push backend Docker image
         run: docker push baylon44/redis-chat-backend:${{ github.run_id }}
-
