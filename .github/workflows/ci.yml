@@ -131,4 +131,4 @@ jobs:
       - name: Build backend Docker image
         run: |
           docker buildx build -t baylon44/redis-chat-backend:latest -t baylon44/redis-chat-backend:${{ github.run_id }} -f Dockerfile . --load
-          baylon44/redis-chat-backend:${{ github.run_id }}
+          docker push baylon44/redis-chat-backend:${{ github.run_id }}

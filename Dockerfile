@@ -30,7 +30,7 @@ run_app()' > /app/start.py
 EXPOSE 8000
 
 # Set environment variable
-ENV PORT 8000
+ENV PORT=8000
 
 # Use the Python script as the entrypoint
 CMD ["python", "/app/start.py"]
