@@ -154,6 +154,8 @@ jobs:
         env:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          git config --global user.email "nwaoshop@gmail.com"
+          git config --global user.name "baylon-obinna"
           git add ./helm/redis-chat-app/values.yaml
           git commit -m "Update image tag to ${{ github.run_id }}"
           git push origin master
