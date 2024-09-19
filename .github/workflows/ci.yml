@@ -132,3 +132,28 @@ jobs:
         run: |
           docker buildx build -t baylon44/redis-chat-backend:latest -t baylon44/redis-chat-backend:${{ github.run_id }} -f Dockerfile . --load
           docker push baylon44/redis-chat-backend:${{ github.run_id }}
+  
+  # update helms charts values with updated image tags and push to github
+  helm_update:
+    runs-on: ubuntu-latest
+    needs: docker_build_push  # This will only run after the Docker image build and push is successful
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Update Helm values.yaml for frontend
+        run: |
+          sed -i '/chatfrontend:/,/tag:/s/tag:.*/tag: ${{ github.run_id }}/' ./helm/values.yaml
+
+      - name: Update Helm values.yaml for backend
+        run: |
+          sed -i '/chatbackend:/,/tag:/s/tag:.*/tag: ${{ github.run_id }}/' ./helm/values.yaml
+
+      - name: Commit and push updated values.yaml
+        env:
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git add ./helm/values.yaml
+          git commit -m "Update image tag to ${{ github.run_id }}"
+          git push origin master

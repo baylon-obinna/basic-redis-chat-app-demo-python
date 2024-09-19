@@ -11,7 +11,7 @@ RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application
 COPY . .
 
-# Create a Python startup script instead of a bash script
+# Python startup script instead of a bash script
 RUN echo 'import eventlet\n\
 eventlet.monkey_patch()\n\
 from chat.app import app, run_app\n\
