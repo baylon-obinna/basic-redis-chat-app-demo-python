@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - master
+      - prod
     paths-ignore:
       - 'README.md'
       - 'K8s/**'
