@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - master
+      - prod
     paths-ignore:
       - 'README.md'
       - 'K8s/**'
@@ -100,7 +100,7 @@ jobs:
           pip install flake8
           flake8 ./app.py
 
-  # Docker image build and push with GitHub run ID tag
+   # Docker image build and push with GitHub run ID tag
   docker_build_push:
     runs-on: ubuntu-latest
     needs: static_analysis  # This will only run after the static analysis is successful
@@ -124,14 +124,15 @@ jobs:
       # Build and tag frontend image with GitHub run ID
       - name: Build frontend Docker image
         run: |
-          docker buildx build -t baylon44/redis-chat-frontend:latest -t baylon44/redis-chat-frontend:${{ github.run_id }} -f ./client/dockerfile  ./client --load
+          docker buildx build -t baylon44/redis-chat-frontend:${{ github.run_id }} -f ./client/dockerfile  ./client --load
           docker push baylon44/redis-chat-frontend:${{ github.run_id }}
 
       # Build and tag backend image with GitHub run ID
       - name: Build backend Docker image
         run: |
-          docker buildx build -t baylon44/redis-chat-backend:latest -t baylon44/redis-chat-backend:${{ github.run_id }} -f Dockerfile . --load
+          docker buildx build -t baylon44/redis-chat-backend:${{ github.run_id }} -f Dockerfile . --load
           docker push baylon44/redis-chat-backend:${{ github.run_id }}
+
   
   # update helms charts values with updated image tags and push to github
   helm_update:
