@@ -158,4 +158,4 @@ jobs:
           git config --global user.name "baylon-obinna"
           git add ./helm/redis-chat-app/values.yaml
           git commit -m "Update image tag to ${{ github.run_id }}"
-          git push origin master
+          git push origin prod
