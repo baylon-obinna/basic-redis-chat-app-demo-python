@@ -2,7 +2,7 @@ chatfrontend:
   image:
     repository: baylon44/redis-chat-frontend
 <<<<<<< HEAD
-    tag: "11059342719"
+    tag: 11188071233
 =======
     tag: 11059342719
 >>>>>>> 20b5ba6568264090c2984c67246a60daf39778b8
@@ -14,7 +14,7 @@ chatbackend:
   image:
     repository: baylon44/redis-chat-backend
 <<<<<<< HEAD
-    tag: "11059342719"
+    tag: 11188071233
 =======
     tag: 11059342719
 >>>>>>> 20b5ba6568264090c2984c67246a60daf39778b8
