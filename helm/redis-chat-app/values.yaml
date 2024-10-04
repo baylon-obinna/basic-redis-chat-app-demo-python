@@ -1,7 +1,7 @@
 chatfrontend:
   image:
     repository: baylon44/redis-chat-frontend
-    tag: "11188397151"
+    tag: "11188479650"
   service:
     type: ClusterIP
     port: 3000
@@ -9,7 +9,7 @@ chatfrontend:
 chatbackend:
   image:
     repository: baylon44/redis-chat-backend
-    tag: "11188397151"
+    tag: "11188479650"
   service:
     type: ClusterIP
     port: 8000
