@@ -144,11 +144,11 @@ jobs:
       
       - name: Update Helm values.yaml for frontend
         run: |
-          sed -i '/chatfrontend:/,/tag:/s/tag:.*/tag: ${{ "github.run_id" }}/' ./helm/redis-chat-app/values.yaml
+          sed -i '/chatfrontend:/,/tag:/s/tag:.*/tag: "${{ github.run_id }}"/' ./helm/redis-chat-app/values.yaml
 
       - name: Update Helm values.yaml for backend
         run: |
-          sed -i '/chatbackend:/,/tag:/s/tag:.*/tag: ${{ "github.run_id" }}/' ./helm/redis-chat-app/values.yaml
+          sed -i '/chatbackend:/,/tag:/s/tag:.*/tag: "${{ github.run_id }}"/' ./helm/redis-chat-app/values.yaml
 
       - name: Commit and push updated values.yaml
         env:
